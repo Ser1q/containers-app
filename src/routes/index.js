@@ -19,4 +19,6 @@ router.patch('/containers/:id', asyncWrapper(containerController.update));
 // assign container to zone
 router.post('/zones/:zoneId/assign', asyncWrapper(zoneController.assignContainer));
 
+router.post('/containers/:id/ship', asyncWrapper(containerController.ship));
+
 module.exports = router;
