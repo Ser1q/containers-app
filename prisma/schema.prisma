@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ZoneType {
+  WAREHOUSE
+  TRANSIT
+  STORAGE
+  OTHER
+}
+
+enum ContainerType {
+  STANDARD
+  REFRIGERATED
+  HAZARDOUS
+  OTHER
+}
+
+enum ContainerStatus {
+  EMPTY
+  LOADED
+  IN_TRANSIT
+  MAINTENANCE
+  OTHER
+}
+
+model Zone {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  capacity    Int
+  current_load Int       @default(0) @map("current_load")
+  type        ZoneType
+  containers  Container[] 
+
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt     @map("updated_at")
+
+  @@map("zones")
+}
+
+model Container {
+  id           Int             @id @default(autoincrement())
+  number       String          @unique
+  type         ContainerType
+  status       ContainerStatus
+  zoneId       Int?            @map("zone_id")
+  zone         Zone?           @relation(fields: [zoneId], references: [id])
+  arrival_time DateTime?       @map("arrival_time")
+
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt     @map("updated_at")
+
+  @@map("containers")
+}
