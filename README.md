@@ -1,8 +1,9 @@
-Containers App — Docker Quickstart Guide
+**Containers App — Docker Quickstart Guide**
 
 ⸻
 
 Требования
+
     •	Docker
     •	Docker Compose
     •	Git (для клонирования репозитория)
@@ -11,16 +12,17 @@ Containers App — Docker Quickstart Guide
 
 1. Установка и запуск приложения
 
-Клонируй репозиторий:
+Клонируйте репозиторий:
 
-git clone <repo-url>
-cd containers-app
+	git clone <repo-url>
+	cd containers-app
 
-Запусти приложение и базу:
+Запустите приложение и базу:
 
-docker-compose up --build -d
+	docker-compose up --build -d
 
 Это поднимет два контейнера:
+
 	•	db — PostgreSQL 15
 	•	app — Node.js приложение (Express + Prisma)
 
@@ -30,21 +32,21 @@ docker-compose up --build -d
 
 Логи приложения:
 
-docker-compose logs -f app
+	docker-compose logs -f app
 
 Ожидаемые строки:
 
-Postgres is available.
-Running prisma generate and migrations...
-Starting in development mode (nodemon)...
+	Postgres is available.
+	Running prisma generate and migrations...
+	Starting in development mode (nodemon)...
 
 Проверка API:
 
-curl http://localhost:3000/
+	curl http://localhost:3000/
 
 Должно вернуть:
 
-{ "ok": true }
+	{ "ok": true }
 
 
 ⸻
@@ -53,9 +55,9 @@ curl http://localhost:3000/
 
 Seed выполняется внутри контейнера app:
 
-docker-compose exec app npx prisma db seed
+	docker-compose exec app npx prisma db seed
 
-После завершения ты увидишь сводку зон и контейнеров.
+После завершения вы увидите сводку зон и контейнеров.
 
 ⸻
 
@@ -63,49 +65,50 @@ docker-compose exec app npx prisma db seed
 
 Зайти в Postgres контейнера:
 
-docker-compose exec db psql -U postgres -d containersdb
+	docker-compose exec db psql -U postgres -d containersdb
 
 Показать таблицы:
 
-\dt;
+	\dt;
 
 Выйти:
 
-\q
+	\q
 
 
 ⸻
 
 5. API — примеры (curl)
-	•	Health:
+	
+•	Health:
 
-curl http://localhost:3000/
+	curl http://localhost:3000/
 
-	•	Создать зону:
+•	Создать зону:
 
-curl -X POST http://localhost:3000/api/zones \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Zone X","capacity":10,"type":"WAREHOUSE"}'
+	curl -X POST http://localhost:3000/api/zones \
+	  -H "Content-Type: application/json" \
+	  -d '{"name":"Zone X","capacity":10,"type":"WAREHOUSE"}'
 
-	•	Список зон:
+•	Список зон:
 
-curl http://localhost:3000/api/zones
+	curl http://localhost:3000/api/zones
 
-	•	Создать контейнер (можно с zoneId — сервис попытается зарезервировать место):
+•	Создать контейнер (можно с zoneId — сервис попытается зарезервировать место):
 
-curl -X POST http://localhost:3000/api/containers \
-  -H "Content-Type: application/json" \
-  -d '{"number":"C-1001","type":"STANDARD","status":"EMPTY","zoneId":1}'
+	curl -X POST http://localhost:3000/api/containers \
+	  -H "Content-Type: application/json" \
+	  -d '{"number":"C-1001","type":"STANDARD","status":"EMPTY","zoneId":1}'
 
-	•	Назначить контейнер в зону:
+•	Назначить контейнер в зону:
 
-curl -X POST http://localhost:3000/api/zones/1/assign \
-  -H "Content-Type: application/json" \
-  -d '{"containerId":123}'
+	curl -X POST http://localhost:3000/api/zones/1/assign \
+	  -H "Content-Type: application/json" \
+	  -d '{"containerId":123}'
 
-	•	Отгрузить (ship) контейнер:
+•	Отгрузить (ship) контейнер:
 
-curl -X POST http://localhost:3000/api/containers/123/ship \
-  -H "Content-Type: application/json" \
-  -d '{"status":"IN_TRANSIT"}'
+	curl -X POST http://localhost:3000/api/containers/123/ship \
+	  -H "Content-Type: application/json" \
+	  -d '{"status":"IN_TRANSIT"}'
 
